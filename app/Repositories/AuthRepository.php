@@ -42,6 +42,8 @@ class AuthRepository implements AuthRepositoryInterface
     public function attemptLogin(array $credentials, bool $remember = false): bool
     {
         return Auth::attempt($credentials, $remember);
+            // Auth::attempt()
+            // بتحاول تتحقق من صحة بيانات المستخدم (زي email + password)
     }
 
     /**
@@ -58,6 +60,7 @@ class AuthRepository implements AuthRepositoryInterface
     public function logout(): void
     {
         Auth::logout();
+        // بيعمل تسجيل خروج  للمستخدم الحالي.
     }
 
     /**

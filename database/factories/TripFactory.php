@@ -47,8 +47,8 @@ class TripFactory extends Factory
             // السعر
             'price_per_seat' => fake()->randomFloat(2, 20, 300),
 // 2 → رقمين بعد العلامة العشرية
-// // 20 → أقل سعر
-// // 300 → أكبر سعر
+// 20 → أقل سعر
+// 300 → أكبر سعر
 
             // الحالة
             'status' => 'scheduled',

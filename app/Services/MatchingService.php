@@ -137,6 +137,7 @@ class MatchingService
 
         return [
             'score' => min($score, 100),
+             //لو الاسكور اقل من 100 هيرجع الاسكور لو اعلي هيرجه 100
             'reason' => implode(' - ', $reasons),
         ];
     }

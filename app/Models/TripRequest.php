@@ -34,7 +34,7 @@ class TripRequest extends Model
 // end_lat → خط العرض للنهاية
 // end_lng → خط الطول للنهاية
 // requested_seats → عدد الكراسي المطلوبة
-// status → حالة الطلب (مثلاً: pending / accepted / rejected)
+// status → ( pending', 'matched', 'accepted', 'rejected', 'cancelled) حالة الطلب
 // matched_trip_id → الرحلة اللي اتربط بيها الطلب
 // notes → ملاحظات إضافية
 

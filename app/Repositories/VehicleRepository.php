@@ -24,8 +24,8 @@ class VehicleRepository implements VehicleRepositoryInterface
     }
     public function  create(array $data ):Vehicle
     {
-return Vehicle::create($data);
-}
+        return Vehicle::create($data);
+    }
     public function  update(Vehicle $vehicle, array $data ):bool
     {
        return $vehicle->update($data);

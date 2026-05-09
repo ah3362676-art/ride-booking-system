@@ -24,9 +24,7 @@ class AuthApiTest extends TestCase
             'password_confirmation' => 'password',
         ]);
 
-        $response
-            ->assertStatus(201)
-            ->assertJsonStructure([
+        $response->assertStatus(201)->assertJsonStructure([
                 'message',
                 'token',
                 'user' => [

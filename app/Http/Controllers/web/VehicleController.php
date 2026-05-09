@@ -21,7 +21,7 @@ class VehicleController extends Controller
     public function index()
     {
       $vehicles=  $this->vehicleRepository->paginateByUser(auth()->id(), 10);
-              return view('vehicles.index', compact('vehicles'));
+         return view('vehicles.index', compact('vehicles'));
 
     }
 
@@ -30,7 +30,7 @@ class VehicleController extends Controller
      */
     public function create()
     {
-                return view('vehicles.create');
+         return view('vehicles.create');
 
     }
 
@@ -39,10 +39,7 @@ class VehicleController extends Controller
      */
  public function store(StoreVehicleRequest $request)
 {
-    $this->vehicleRepository->create(array_merge(
-        $request->validated(),
-        ['user_id' => auth()->id()]
-    ));
+    $this->vehicleRepository->create(array_merge( $request->validated(),['user_id' => auth()->id()]));
 
     return redirect()
         ->route('vehicles.index')

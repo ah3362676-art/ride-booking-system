@@ -71,7 +71,7 @@ class AuthController extends Controller
         if (! $this->authRepository->attemptLogin($credentials, $remember)) {
             return back()->withErrors([
                 'email' => 'بيانات الدخول غير صحيحة',
-            ])->onlyInput('email');
+            ])->onlyInput('email');    // لو ف غلط هيرجع لصفحة تسجيل دخول والايميل الي نت كتبتة موجود
         }
 
         // إعادة إنشاء الـ session للحماية

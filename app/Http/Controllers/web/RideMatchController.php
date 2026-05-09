@@ -7,6 +7,7 @@ use App\Interfaces\RideMatchRepositoryInterface;
 use App\Models\RideMatch;
 use App\Models\TripRequest;
 use App\Services\MatchingService;
+use App\Services\TripBookingService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -18,6 +19,7 @@ class RideMatchController extends Controller
     public function __construct(
         protected RideMatchRepositoryInterface $rideMatchRepository,
         protected MatchingService $matchingService,
+        protected TripBookingService $bookingService
     ) {}
 
     /**
@@ -62,35 +64,24 @@ class RideMatchController extends Controller
     /**
      * قبول مطابقة معينة
      */
-    public function accept(TripRequest $tripRequest, RideMatch $rideMatch): RedirectResponse
-    {
-        abort_if($tripRequest->rider_id !== auth()->id(), 403);
-        abort_if($rideMatch->trip_request_id !== $tripRequest->id, 404);
+public function accept(TripRequest $tripRequest, RideMatch $rideMatch)
+{
+    abort_if($tripRequest->rider_id !== auth()->id(), 403);
 
-        // تحديث المطابقة الحالية
-        $this->rideMatchRepository->update($rideMatch, [
-            'status' => 'accepted',
-        ]);
+    // تنفيذ الحجز الفعلي
+    $this->bookingService->bookFromMatch(
+        $tripRequest,
+        $rideMatch->trip
+    );
 
-        // تحديث الطلب نفسه
-        $tripRequest->update([
-            'status' => 'accepted',
-            'matched_trip_id' => $rideMatch->trip_id,
-        ]);
+    // تحديث المطابقة
+    $this->rideMatchRepository->update($rideMatch, [
+        'status' => 'accepted',
+    ]);
 
-        // رفض باقي المطابقات الأخرى
-        foreach ($this->rideMatchRepository->getByTripRequest($tripRequest->id) as $match) {
-            if ($match->id !== $rideMatch->id && $match->status === 'suggested') {
-                $this->rideMatchRepository->update($match, [
-                    'status' => 'rejected',
-                ]);
-            }
-        }
-
-        return redirect()
-            ->route('ride-matches.index', $tripRequest)
-            ->with('success', 'تم قبول المطابقة بنجاح');
-    }
+    return redirect()->route('ride-matches.index', $tripRequest)
+        ->with('success', 'تم حجز الرحلة بنجاح 🚀');
+}
 
     /**
      * رفض مطابقة معينة

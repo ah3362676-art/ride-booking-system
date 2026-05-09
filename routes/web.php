@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\RideMatchController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\VehicleController;
 use App\Http\Controllers\Web\TripController;
+use App\Http\Controllers\Web\TripPassengerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -86,5 +87,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/{rideMatch}/accept', [RideMatchController::class, 'accept'])->name('ride-matches.accept');
         Route::post('/{rideMatch}/reject', [RideMatchController::class, 'reject'])->name('ride-matches.reject');
     });
+
+         /*
+    |--------------------------------------------------------------------------
+    | TripPassenger Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::get('/my-trips', [TripPassengerController::class, 'myTrips'])
+    ->name('my-trips');
 
 });

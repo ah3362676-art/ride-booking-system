@@ -4,11 +4,13 @@ namespace App\Providers;
 
 use App\Interfaces\AuthRepositoryInterface;
 use App\Interfaces\RideMatchRepositoryInterface;
+use App\Interfaces\TripPassengerRepositoryInterface;
 use App\Interfaces\TripRepositoryInterface;
 use App\Interfaces\TripRequestRepositoryInterface;
 use App\Interfaces\VehicleRepositoryInterface;
 use App\Repositories\AuthRepository;
 use App\Repositories\RideMatchRepository;
+use App\Repositories\TripPassengerRepository;
 use App\Repositories\TripRepository;
 use App\Repositories\TripRequestRepository;
 use App\Repositories\VehicleRepository;
@@ -35,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
 
         // ربط RideMatch interface بالـ repository
         $this->app->bind(RideMatchRepositoryInterface::class, RideMatchRepository::class);
+
+        $this->app->bind(TripPassengerRepositoryInterface::class, TripPassengerRepository::class);
     }
 
     /**

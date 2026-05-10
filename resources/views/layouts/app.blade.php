@@ -15,6 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
+        <div id="notifications" class="fixed top-5 right-5 space-y-2 z-50"></div>
         <div class="min-h-screen bg-gray-100">
             @include('layouts.navigation')
 

@@ -5,6 +5,7 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
+
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
@@ -12,11 +13,23 @@ return Application::configure(basePath: dirname(__DIR__))
         channels: __DIR__.'/../routes/channels.php',
         health: '/up',
     )
+
+    // 🔥 Middleware
     ->withMiddleware(function (Middleware $middleware): void {
-         $middleware->alias([
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
-    ]);
+
+        $middleware->alias([
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+        ]);
+
     })
+
+    // 🔥 مهم جدًا للـ Broadcasting / Pusher
+    ->withBroadcasting(
+        __DIR__.'/../routes/channels.php'
+    )
+
     ->withExceptions(function (Exceptions $exceptions): void {
         //
-    })->create();
+    })
+
+    ->create();

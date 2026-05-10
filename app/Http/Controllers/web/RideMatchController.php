@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Events\MatchAccepted;
 use App\Http\Controllers\Controller;
 use App\Interfaces\RideMatchRepositoryInterface;
 use App\Models\RideMatch;
@@ -78,6 +79,8 @@ public function accept(TripRequest $tripRequest, RideMatch $rideMatch)
     $this->rideMatchRepository->update($rideMatch, [
         'status' => 'accepted',
     ]);
+     event(new MatchAccepted($rideMatch));
+
 
     return redirect()->route('ride-matches.index', $tripRequest)
         ->with('success', 'تم حجز الرحلة بنجاح 🚀');

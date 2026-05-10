@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\MatchCreated;
 use App\Interfaces\RideMatchRepositoryInterface;
 use App\Models\Trip;
 use App\Models\TripRequest;
@@ -50,6 +51,10 @@ class MatchingService
                 'match_reason' => $scoreData['reason'],
                 'status' => 'suggested',
             ]);
+            event(new MatchCreated($match));
+            logger('broadcast fired');
+            broadcast(new \App\Events\MatchAccepted($rideMatch));
+
 
             $matches->push($match);
         }

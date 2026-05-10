@@ -90,7 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
          /*
     |--------------------------------------------------------------------------
-    | TripPassenger Routes
+    |  Routes
     |--------------------------------------------------------------------------
     */
     Route::get('/my-trips', [TripPassengerController::class, 'myTrips'])

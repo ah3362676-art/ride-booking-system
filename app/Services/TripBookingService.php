@@ -45,7 +45,7 @@ class TripBookingService
 
             // تحديث الطلب
             $tripRequest->update([
-                'status' => 'completed',
+                'status' => 'accepted',
             ]);
 
             return $booking;

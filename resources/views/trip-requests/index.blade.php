@@ -45,7 +45,9 @@
                                 @endif
                             </div>
 
+                            {{-- أزرار التحكم --}}
                             <div class="mt-4 flex items-center gap-3">
+
                                 <a href="{{ route('trip-requests.show', $request) }}"
                                    class="text-blue-600 hover:text-blue-800">
                                     عرض
@@ -56,7 +58,8 @@
                                     تعديل
                                 </a>
 
-                                <form action="{{ route('trip-requests.destroy', $request) }}" method="POST"
+                                <form action="{{ route('trip-requests.destroy', $request) }}"
+                                      method="POST"
                                       onsubmit="return confirm('هل أنت متأكد من حذف الطلب؟')">
                                     @csrf
                                     @method('DELETE')
@@ -65,6 +68,21 @@
                                         حذف
                                     </button>
                                 </form>
+
+                                {{-- زر Generate Matches --}}
+                                <form method="POST"
+                                      action="{{ route('ride-matches.generate', $request) }}"
+                                      class="mt-3">
+
+                                    @csrf
+
+                                    <button type="submit"
+                                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
+
+                                        🔍 Generate Matches
+                                    </button>
+                                </form>
+
                             </div>
                         </div>
                     @empty

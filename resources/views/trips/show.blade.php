@@ -1,6 +1,5 @@
 <x-app-layout>
     <x-slot name="header">
-        {{-- عنوان الصفحة --}}
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             تفاصيل الرحلة
         </h2>
@@ -10,6 +9,7 @@
         <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 space-y-3">
+
                     <h3 class="text-xl font-bold text-gray-800">
                         {{ $trip->start_address }} → {{ $trip->end_address }}
                     </h3>
@@ -20,18 +20,6 @@
                     <p><span class="font-semibold">عدد المقاعد:</span> {{ $trip->available_seats }}</p>
                     <p><span class="font-semibold">السعر لكل مقعد:</span> {{ number_format($trip->price_per_seat, 2) }}</p>
                     <p><span class="font-semibold">الحالة:</span> {{ $trip->status }}</p>
-
-                    <div>
-                        <p class="font-semibold">عنوان البداية:</p>
-                        <p class="text-sm text-gray-600">{{ $trip->start_address }}</p>
-                        <p class="text-xs text-gray-500">Lat: {{ $trip->start_lat }} / Lng: {{ $trip->start_lng }}</p>
-                    </div>
-
-                    <div>
-                        <p class="font-semibold">عنوان النهاية:</p>
-                        <p class="text-sm text-gray-600">{{ $trip->end_address }}</p>
-                        <p class="text-xs text-gray-500">Lat: {{ $trip->end_lat }} / Lng: {{ $trip->end_lng }}</p>
-                    </div>
 
                     <div>
                         <p class="font-semibold">ملاحظات:</p>
@@ -49,6 +37,7 @@
                             رجوع
                         </a>
                     </div>
+
                 </div>
             </div>
         </div>

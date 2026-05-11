@@ -87,10 +87,10 @@ class Trip extends Model
      * الركاب المنضمين للرحلة
      * سنستخدم العلاقة لاحقًا
      */
-    // public function passengers()
-    // {
-    //     return $this->hasMany(TripPassenger::class);
-    // }
+    public function passengers()
+    {
+        return $this->hasMany(TripPassenger::class);
+    }
 
     // /**
     //  * طلبات المطابقة الخاصة بالرحلة
@@ -100,4 +100,9 @@ class Trip extends Model
     {
         return $this->hasMany(RideMatch::class);
     }
+
+public function messages()
+{
+    return $this->hasMany(Message::class);
+}
 }

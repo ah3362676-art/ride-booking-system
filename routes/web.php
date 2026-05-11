@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\web\TripRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\AuthController;
+use App\Http\Controllers\Web\ChatController;
 use App\Http\Controllers\Web\RideMatchController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\VehicleController;
@@ -96,4 +98,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/my-trips', [TripPassengerController::class, 'myTrips'])
     ->name('my-trips');
 
+
+Route::post('/trips/{trip}/messages', [ChatController::class, 'store'])
+    ->name('messages.store');
+
+    Route::get('/chat/{trip}', [ChatController::class, 'show'])
+    ->name('chat.show');
 });

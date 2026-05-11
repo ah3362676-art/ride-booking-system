@@ -53,7 +53,6 @@ class MatchingService
             ]);
             event(new MatchCreated($match));
             logger('broadcast fired');
-            broadcast(new \App\Events\MatchAccepted($rideMatch));
 
 
             $matches->push($match);

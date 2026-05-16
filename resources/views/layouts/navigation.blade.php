@@ -25,55 +25,34 @@
                                 :active="request()->routeIs('dashboard')"
                                 class="flex items-center gap-2 text-gray-300 hover:text-green-400 transition">
 
-                        <svg class="w-5 h-5"
-                             fill="none"
-                             stroke="currentColor"
-                             viewBox="0 0 24 24">
-
-                            <path stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  stroke-width="2"
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                   d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                         </svg>
 
                         Dashboard
                     </x-nav-link>
 
-                    {{-- DRIVER ONLY --}}
                     @if($user->role->isDriver())
 
-                        <!-- Vehicles -->
                         <x-nav-link :href="route('vehicles.index')"
                                     :active="request()->routeIs('vehicles.*')"
                                     class="flex items-center gap-2 text-gray-300 hover:text-green-400 transition">
 
-                            <svg class="w-5 h-5"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 viewBox="0 0 24 24">
-
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="2"
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M3 13l2-5h14l2 5m-1 0a2 2 0 11-4 0m-8 0a2 2 0 11-4 0m12 0H5" />
                             </svg>
 
                             Vehicles
                         </x-nav-link>
 
-                        <!-- Trips -->
                         <x-nav-link :href="route('trips.index')"
                                     :active="request()->routeIs('trips.*')"
                                     class="flex items-center gap-2 text-gray-300 hover:text-green-400 transition">
 
-                            <svg class="w-5 h-5"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 viewBox="0 0 24 24">
-
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="2"
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M9 20l-5-2V5l5 2 6-2 5 2v13l-5-2-6 2z" />
                             </svg>
 
@@ -82,46 +61,32 @@
 
                     @endif
 
-                    {{-- RIDER ONLY --}}
                     @if($user->role->isRider())
 
-                        <!-- Requests -->
                         <x-nav-link :href="route('trip-requests.index')"
                                     :active="request()->routeIs('trip-requests.*')"
                                     class="flex items-center gap-2 text-gray-300 hover:text-green-400 transition">
 
-                            <svg class="w-5 h-5"
-                                 fill="none"
-                                 stroke="currentColor"
-                                 viewBox="0 0 24 24">
-
-                                <path stroke-linecap="round"
-                                      stroke-linejoin="round"
-                                      stroke-width="2"
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                       d="M16 12H8m0 0l4-4m-4 4l4 4" />
                             </svg>
 
                             Requests
                         </x-nav-link>
 
-                       <!-- My Trips -->
-                <x-nav-link :href="route('my-trips')"
-                            :active="request()->routeIs('my-trips')"
-                            class="flex items-center gap-2 text-gray-300 hover:text-green-400 transition">
+                        <x-nav-link :href="route('my-trips')"
+                                    :active="request()->routeIs('my-trips')"
+                                    class="flex items-center gap-2 text-gray-300 hover:text-green-400 transition">
 
-                    <svg class="w-5 h-5"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
 
-                        <path stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+                            My Trips
+                        </x-nav-link>
 
-                    My Trips
-                </x-nav-link>
                     @endif
 
                 </div>
@@ -131,30 +96,34 @@
             <!-- RIGHT SIDE -->
             <div class="hidden md:flex items-center space-x-4">
 
-                <div class="text-sm text-gray-400">
-                    {{ $user->name }}
-                </div>
-
-                <!-- Dropdown -->
+                <!-- Dropdown ONLY -->
                 <div class="relative" x-data="{ dropdown: false }">
 
                     <button @click="dropdown = !dropdown"
-                            class="bg-gray-900 px-4 py-2 rounded-xl hover:bg-gray-800 transition">
+                            class="bg-gray-900 px-4 py-2 rounded-xl hover:bg-gray-800 transition flex items-center gap-2">
+
+                        <!-- User Icon -->
+                        <svg class="w-5 h-5 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M5.121 17.804A4 4 0 0110 15h4a4 4 0 014.879 2.804M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+
                         Menu
                     </button>
 
                     <div x-show="dropdown"
                          @click.away="dropdown = false"
-                         class="absolute right-0 mt-2 w-48 bg-white text-black rounded-xl shadow-lg overflow-hidden z-50">
+                         class="absolute right-0 mt-2 w-52 bg-white text-black rounded-xl shadow-lg overflow-hidden z-50">
 
-                        <a href="{{ route('profile.edit') }}"
-                           class="block px-4 py-2 hover:bg-gray-100">
-                            Profile
-                        </a>
+                        <!-- ONLY NAME + EMAIL -->
+                        <div class="px-4 py-3 border-b">
+                            <p class="font-bold text-sm">{{ $user->name }}</p>
+                            <p class="text-xs text-gray-500">{{ $user->email }}</p>
+                        </div>
 
+                        <!-- LOGOUT ONLY -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-
                             <button type="submit"
                                     class="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-500">
                                 Logout
@@ -172,22 +141,11 @@
 
                 <button @click="open = !open" class="text-gray-300">
 
-                    <svg class="h-6 w-6"
-                         fill="none"
-                         stroke="currentColor"
-                         viewBox="0 0 24 24">
-
-                        <path :class="{ 'hidden': open }"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path :class="{ 'hidden': open }" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M4 6h16M4 12h16M4 18h16" />
-
-                        <path :class="{ 'hidden': !open }"
-                              class="hidden"
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
+                        <path :class="{ 'hidden': !open }" class="hidden"
+                              stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                               d="M6 18L18 6M6 6l12 12" />
                     </svg>
 
@@ -210,7 +168,6 @@
                 Dashboard
             </a>
 
-            {{-- DRIVER --}}
             @if($user->role->isDriver())
 
                 <a href="{{ route('vehicles.index') }}"
@@ -225,7 +182,6 @@
 
             @endif
 
-            {{-- RIDER --}}
             @if($user->role->isRider())
 
                 <a href="{{ route('trip-requests.index') }}"
@@ -246,16 +202,11 @@
                     {{ $user->email }}
                 </div>
 
-                <form method="POST"
-                      action="{{ route('logout') }}"
-                      class="mt-2">
-
+                <form method="POST" action="{{ route('logout') }}" class="mt-2">
                     @csrf
-
                     <button class="text-red-400 hover:text-red-300">
                         Logout
                     </button>
-
                 </form>
 
             </div>

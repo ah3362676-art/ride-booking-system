@@ -1,4 +1,7 @@
 <x-app-layout>
+    @php
+    $user = auth()->user();
+@endphp
 
     <x-slot name="header">
         <h2 class="text-xl font-bold text-white">
@@ -65,20 +68,61 @@
 
                 <div class="grid md:grid-cols-3 gap-4">
 
-                    <a href="{{ route('trips.index') }}"
-                       class="bg-black text-white text-center py-3 rounded-2xl hover:bg-gray-800 transition">
-                        Trips
-                    </a>
+                      @if($user->role->isDriver())
 
-                    <a href="{{ route('vehicles.index') }}"
-                       class="bg-green-500 text-white text-center py-3 rounded-2xl hover:bg-green-600 transition">
-                        Vehicles
-                    </a>
+                        <x-nav-link :href="route('vehicles.index')"
+                                    :active="request()->routeIs('vehicles.*')"
+                                    class="flex items-center gap-2 text-gray-800 hover:text-green-400 transition">
 
-                    <a href="{{ route('trip-requests.index') }}"
-                       class="bg-gray-900 text-white text-center py-3 rounded-2xl hover:bg-black transition">
-                        Requests
-                    </a>
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M3 13l2-5h14l2 5m-1 0a2 2 0 11-4 0m-8 0a2 2 0 11-4 0m12 0H5" />
+                            </svg>
+
+                            Vehicles
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('trips.index')"
+                                    :active="request()->routeIs('trips.*')"
+                                    class="flex items-center gap-2 text-gray-800 hover:text-green-400 transition">
+
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M9 20l-5-2V5l5 2 6-2 5 2v13l-5-2-6 2z" />
+                            </svg>
+
+                            Trips
+                        </x-nav-link>
+
+                    @endif
+
+                    @if($user->role->isRider())
+
+                        <x-nav-link :href="route('trip-requests.index')"
+                                    :active="request()->routeIs('trip-requests.*')"
+                                    class="flex items-center gap-2 text-gray-800 hover:text-green-400 transition">
+
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M16 12H8m0 0l4-4m-4 4l4 4" />
+                            </svg>
+
+                            Requests
+                        </x-nav-link>
+
+                        <x-nav-link :href="route('my-trips')"
+                                    :active="request()->routeIs('my-trips')"
+                                    class="flex items-center gap-2 text-gray-800 hover:text-green-400 transition">
+
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+
+                            My Trips
+                        </x-nav-link>
+
+                    @endif
 
                 </div>
 

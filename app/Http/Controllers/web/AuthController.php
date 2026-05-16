@@ -79,7 +79,7 @@ class AuthController extends Controller
 
         // التحويل للداشبورد
         return redirect()
-       ->intended()
+       ->route("dashboard")
         ->with('success', 'تم تسجيل الدخول بنجاح');
     }
 

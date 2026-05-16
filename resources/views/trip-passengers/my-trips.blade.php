@@ -7,7 +7,7 @@
 
             <div class="border p-4 mb-3 rounded">
 
-                {{-- الرحلة نفسها --}}
+                {{-- الرحلة --}}
                 <p>
                     {{ $passenger->trip->start_address }}
                     →
@@ -18,9 +18,21 @@
                 <p>المقاعد: {{ $passenger->seats_booked }}</p>
                 <p>الإجمالي: {{ $passenger->total_price }}</p>
 
-                {{-- زر الشات --}}
+                {{-- زر الدفع --}}
+                @if($passenger->payment_status !== 'paid')
+                    <a href="{{ route('payment.pay', $passenger->id) }}"
+                       class="text-green-600 font-bold">
+                        ادفع الآن
+                    </a>
+                @else
+                    <span class="text-green-700 font-bold">
+                        مدفوع ✔
+                    </span>
+                @endif
+
+                {{-- زر الشات (زي ما هو بدون أي تغيير) --}}
                 <a href="{{ route('chat.show', $passenger->trip_id) }}"
-                   class="text-blue-600">
+                   class="text-blue-600 ml-4">
                     فتح الشات
                 </a>
 

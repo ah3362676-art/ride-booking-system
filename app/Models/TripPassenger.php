@@ -21,6 +21,8 @@ class TripPassenger extends Model
         'price_per_seat',
         'total_price',
         'status',
+        'payment_status',
+        'transaction_id',
     ];
 
     /**

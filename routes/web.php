@@ -1,16 +1,17 @@
 <?php
 
-use App\Http\Controllers\MessageController;
 use App\Http\Controllers\web\TripRequestController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\ChatController;
+use App\Http\Controllers\Web\PaymentController;
 use App\Http\Controllers\Web\RideMatchController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\VehicleController;
 use App\Http\Controllers\Web\TripController;
 use App\Http\Controllers\Web\TripPassengerController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -104,4 +105,22 @@ Route::post('/trips/{trip}/messages', [ChatController::class, 'store'])
 
     Route::get('/chat/{trip}', [ChatController::class, 'show'])
     ->name('chat.show');
+
+
+
+Route::get('/pay/{tripPassenger}', [PaymentController::class, 'pay'])
+    ->name('payment.pay');
+
+Route::get('/paymob/callback', [PaymentController::class, 'callback'])
+    ->name('paymob.callback');
+
+Route::post('/paymob/webhook', [PaymentController::class, 'webhook'])
+    ->name('paymob.webhook');
+
+Route::get('/payment-success', [PaymentController::class, 'success'])
+    ->name('payment.success');
+
+Route::get('/payment-failed', [PaymentController::class, 'failed'])
+    ->name('payment.failed');
+
 });

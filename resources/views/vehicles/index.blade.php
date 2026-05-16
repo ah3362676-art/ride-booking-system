@@ -1,82 +1,117 @@
 <x-app-layout>
+
     <x-slot name="header">
-        {{-- عنوان الصفحة --}}
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            مركباتي
+        <h2 class="text-xl font-bold text-white">
+            My Vehicles
         </h2>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-10 bg-gray-100 min-h-screen">
 
-            {{-- رسالة نجاح --}}
+        <div class="max-w-7xl mx-auto px-4 space-y-6">
+
+            {{-- Success Message --}}
             @if (session('success'))
-                <div class="mb-4 rounded-lg bg-green-100 px-4 py-3 text-green-700">
+                <div class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-xl">
                     {{ session('success') }}
                 </div>
             @endif
 
-            {{-- زر إضافة مركبة --}}
-            <div class="mb-4">
+            {{-- Add Button --}}
+            <div class="flex justify-end">
                 <a href="{{ route('vehicles.create') }}"
-                   class="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
-                    إضافة مركبة جديدة
+                   class="bg-black text-white px-5 py-3 rounded-2xl hover:bg-gray-800 transition">
+                    + Add Vehicle
                 </a>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    @forelse ($vehicles as $vehicle)
-                        <div class="mb-4 rounded-lg border p-4">
-                            <h3 class="text-lg font-bold text-gray-800">
-                                {{ $vehicle->brand }} - {{ $vehicle->model }}
-                            </h3>
+            {{-- Vehicles Grid --}}
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
 
-                            <div class="mt-2 space-y-1 text-sm text-gray-600">
-                                <p>اللون: {{ $vehicle->color }}</p>
-                                <p>رقم اللوحة: {{ $vehicle->plate_number }}</p>
-                                <p>عدد المقاعد: {{ $vehicle->seats_count }}</p>
-                                <p>
-                                    الحالة:
-                                    @if ($vehicle->is_active)
-                                        <span class="font-semibold text-green-600">مفعلة</span>
-                                    @else
-                                        <span class="font-semibold text-red-600">غير مفعلة</span>
-                                    @endif
-                                </p>
-                            </div>
+                @forelse ($vehicles as $vehicle)
 
-                            <div class="mt-4 flex items-center gap-3">
-                                <a href="{{ route('vehicles.show', $vehicle) }}"
-                                   class="text-blue-600 hover:text-blue-800">
-                                    عرض
-                                </a>
+                    <div class="bg-white rounded-3xl shadow hover:shadow-xl transition p-6">
 
-                                <a href="{{ route('vehicles.edit', $vehicle) }}"
-                                   class="text-yellow-600 hover:text-yellow-800">
-                                    تعديل
-                                </a>
+                        {{-- Title --}}
+                        <h3 class="text-xl font-bold text-gray-800">
+                            {{ $vehicle->brand }} {{ $vehicle->model }}
+                        </h3>
 
-                                <form action="{{ route('vehicles.destroy', $vehicle) }}" method="POST"
-                                      onsubmit="return confirm('هل أنت متأكد من حذف المركبة؟')">
-                                    @csrf
-                                    @method('DELETE')
+                        {{-- Info --}}
+                        <div class="mt-4 space-y-2 text-sm text-gray-600">
 
-                                    <button type="submit" class="text-red-600 hover:text-red-800">
-                                        حذف
-                                    </button>
-                                </form>
-                            </div>
+                            <p>
+                                <span class="font-semibold">Color:</span>
+                                {{ $vehicle->color }}
+                            </p>
+
+                            <p>
+                                <span class="font-semibold">Plate:</span>
+                                {{ $vehicle->plate_number }}
+                            </p>
+
+                            <p>
+                                <span class="font-semibold">Seats:</span>
+                                {{ $vehicle->seats_count }}
+                            </p>
+
+                            <p>
+                                <span class="font-semibold">Status:</span>
+
+                                @if ($vehicle->is_active)
+                                    <span class="text-green-600 font-bold">Active</span>
+                                @else
+                                    <span class="text-red-600 font-bold">Inactive</span>
+                                @endif
+                            </p>
+
                         </div>
-                    @empty
-                        <p class="text-gray-500">لا توجد مركبات حتى الآن.</p>
-                    @endforelse
 
-                    <div class="mt-6">
-                        {{ $vehicles->links() }}
+                        {{-- Actions --}}
+                        <div class="mt-6 flex items-center justify-between">
+
+                            <a href="{{ route('vehicles.show', $vehicle) }}"
+                               class="text-blue-600 hover:text-blue-800">
+                                View
+                            </a>
+
+                            <a href="{{ route('vehicles.edit', $vehicle) }}"
+                               class="text-yellow-600 hover:text-yellow-800">
+                                Edit
+                            </a>
+
+                            <form action="{{ route('vehicles.destroy', $vehicle) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Delete this vehicle?')">
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="text-red-600 hover:text-red-800">
+                                    Delete
+                                </button>
+                            </form>
+
+                        </div>
+
                     </div>
-                </div>
+
+                @empty
+
+                    <div class="col-span-full text-center text-gray-500">
+                        No vehicles found. Add your first vehicle 🚗
+                    </div>
+
+                @endforelse
+
             </div>
+
+            {{-- Pagination --}}
+            <div class="mt-6">
+                {{ $vehicles->links() }}
+            </div>
+
         </div>
+
     </div>
+
 </x-app-layout>

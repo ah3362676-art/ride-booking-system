@@ -1,99 +1,144 @@
 <x-app-layout>
+
     <x-slot name="header">
-        {{-- عنوان الصفحة --}}
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            طلبات رحلاتي
+        <h2 class="text-xl font-bold text-white">
+            My Trip Requests
         </h2>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-10 bg-gray-100 min-h-screen">
 
-            {{-- رسالة نجاح --}}
+        <div class="max-w-7xl mx-auto px-4 space-y-6">
+
+            {{-- Success Message --}}
             @if (session('success'))
-                <div class="mb-4 rounded-lg bg-green-100 px-4 py-3 text-green-700">
+                <div class="bg-green-100 border border-green-300 text-green-700 px-4 py-3 rounded-xl">
                     {{ session('success') }}
                 </div>
             @endif
 
-            <div class="mb-4">
+            {{-- Create Button --}}
+            <div class="flex justify-end">
                 <a href="{{ route('trip-requests.create') }}"
-                   class="inline-flex items-center rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700">
-                    طلب رحلة جديدة
+                   class="bg-black text-white px-5 py-3 rounded-2xl hover:bg-gray-800 transition">
+                    + New Request
                 </a>
             </div>
 
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    @forelse ($tripRequests as $request)
-                        <div class="mb-4 rounded-lg border p-4">
+            {{-- Grid --}}
+            <div class="grid md:grid-cols-2 gap-6">
+
+                @forelse ($tripRequests as $request)
+
+                    <div class="bg-white rounded-3xl shadow hover:shadow-xl transition p-6 space-y-4">
+
+                        {{-- Route --}}
+                        <div>
                             <h3 class="text-lg font-bold text-gray-800">
                                 {{ $request->start_address }} → {{ $request->end_address }}
                             </h3>
 
-                            <div class="mt-2 space-y-1 text-sm text-gray-600">
-                                <p>عدد المقاعد المطلوبة: {{ $request->requested_seats }}</p>
-                                <p>الحالة: {{ $request->status }}</p>
-
-                                @if ($request->matchedTrip)
-                                    <p>
-                                        الرحلة المطابقة:
-                                        {{ $request->matchedTrip->start_address }}
-                                        →
-                                        {{ $request->matchedTrip->end_address }}
-                                    </p>
-                                @endif
-                            </div>
-
-                            {{-- أزرار التحكم --}}
-                            <div class="mt-4 flex items-center gap-3">
-
-                                <a href="{{ route('trip-requests.show', $request) }}"
-                                   class="text-blue-600 hover:text-blue-800">
-                                    عرض
-                                </a>
-
-                                <a href="{{ route('trip-requests.edit', $request) }}"
-                                   class="text-yellow-600 hover:text-yellow-800">
-                                    تعديل
-                                </a>
-
-                                <form action="{{ route('trip-requests.destroy', $request) }}"
-                                      method="POST"
-                                      onsubmit="return confirm('هل أنت متأكد من حذف الطلب؟')">
-                                    @csrf
-                                    @method('DELETE')
-
-                                    <button type="submit" class="text-red-600 hover:text-red-800">
-                                        حذف
-                                    </button>
-                                </form>
-
-                                {{-- زر Generate Matches --}}
-                                <form method="POST"
-                                      action="{{ route('ride-matches.generate', $request) }}"
-                                      class="mt-3">
-
-                                    @csrf
-
-                                    <button type="submit"
-                                        class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">
-
-                                        🔍 Generate Matches
-                                    </button>
-                                </form>
-
-                            </div>
+                            <p class="text-sm text-gray-500 mt-1">
+                                Trip request details
+                            </p>
                         </div>
-                    @empty
-                        <p class="text-gray-500">لا توجد طلبات رحلات حتى الآن.</p>
-                    @endforelse
 
-                    <div class="mt-6">
-                        {{ $tripRequests->links() }}
+                        {{-- Info --}}
+                        <div class="grid grid-cols-2 gap-3 text-sm">
+
+                            <div>
+                                <p class="text-gray-500">Requested Seats</p>
+                                <p class="font-bold text-gray-800">
+                                    {{ $request->requested_seats }}
+                                </p>
+                            </div>
+
+                            <div>
+                                <p class="text-gray-500">Status</p>
+
+                                <span class="inline-block mt-1 px-3 py-1 rounded-full bg-gray-100 text-gray-800 text-xs font-semibold">
+                                    {{ ucfirst($request->status) }}
+                                </span>
+                            </div>
+
+                        </div>
+
+                        {{-- Matched Trip --}}
+                        @if ($request->matchedTrip)
+                            <div class="bg-green-50 border border-green-200 rounded-2xl p-4">
+                                <p class="text-sm text-green-700 font-semibold">
+                                    Matched Trip
+                                </p>
+
+                                <p class="text-sm text-gray-700 mt-1">
+                                    {{ $request->matchedTrip->start_address }}
+                                    →
+                                    {{ $request->matchedTrip->end_address }}
+                                </p>
+                            </div>
+                        @endif
+
+                        {{-- Actions --}}
+                        <div class="flex flex-wrap items-center gap-4 pt-2">
+
+                            <a href="{{ route('trip-requests.show', $request) }}"
+                               class="text-blue-600 hover:text-blue-800">
+                                View
+                            </a>
+
+                            <a href="{{ route('trip-requests.edit', $request) }}"
+                               class="text-yellow-600 hover:text-yellow-800">
+                                Edit
+                            </a>
+
+                            {{-- Generate Matches --}}
+                            <form method="POST"
+                                  action="{{ route('ride-matches.generate', $request) }}">
+
+                                @csrf
+
+                                <button type="submit"
+                                    class="bg-blue-600 text-white px-4 py-1 rounded-xl hover:bg-blue-700 transition text-sm">
+
+                                    🔍 Generate Matches
+                                </button>
+
+                            </form>
+
+                            <form action="{{ route('trip-requests.destroy', $request) }}"
+                                  method="POST"
+                                  onsubmit="return confirm('Delete this request?')">
+
+                                @csrf
+                                @method('DELETE')
+
+                                <button class="text-red-600 hover:text-red-800">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
                     </div>
-                </div>
+
+                @empty
+
+                    <div class="col-span-full text-center text-gray-500">
+                        No trip requests yet. Create your first request 🚗
+                    </div>
+
+                @endforelse
+
             </div>
+
+            {{-- Pagination --}}
+            <div class="mt-6">
+                {{ $tripRequests->links() }}
+            </div>
+
         </div>
+
     </div>
+
 </x-app-layout>

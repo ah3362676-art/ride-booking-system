@@ -2,9 +2,10 @@
 
 namespace App\Filament\Resources\TripPassengers\Schemas;
 
+use Filament\Schemas\Schema;
+
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Schemas\Schema;
 
 class TripPassengerForm
 {
@@ -12,34 +13,64 @@ class TripPassengerForm
     {
         return $schema
             ->components([
-                TextInput::make('trip_id')
+
+                Select::make('trip_id')
+                    ->relationship('trip', 'start_address')
+                    ->searchable()
                     ->required()
-                    ->numeric(),
-                TextInput::make('user_id')
+                    ->label('Trip'),
+
+                Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->searchable()
                     ->required()
-                    ->numeric(),
-                TextInput::make('trip_request_id')
-                    ->numeric()
-                    ->default(null),
+                    ->label('Passenger'),
+
+                Select::make('trip_request_id')
+                    ->relationship('tripRequest', 'id')
+                    ->searchable()
+                    ->label('Trip Request'),
+
                 TextInput::make('seats_booked')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('price_per_seat')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('total_price')
-                    ->required()
                     ->numeric()
-                    ->prefix('$'),
-                Select::make('status')
-                    ->options(['pending' => 'Pending', 'confirmed' => 'Confirmed', 'cancelled' => 'Cancelled'])
-                    ->default('pending')
-                    ->required(),
-                TextInput::make('payment_status')
                     ->required()
-                    ->default('pending'),
+                    ->label('Seats Booked'),
+
+                TextInput::make('price_per_seat')
+                    ->numeric()
+                    ->required()
+                    ->prefix('EGP')
+                    ->label('Price Per Seat'),
+
+                TextInput::make('total_price')
+                    ->numeric()
+                    ->required()
+                    ->prefix('EGP')
+                    ->label('Total Price'),
+
+                Select::make('status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'confirmed' => 'Confirmed',
+                        'cancelled' => 'Cancelled',
+                    ])
+                    ->required()
+                    ->default('pending')
+                    ->label('Status'),
+
+                Select::make('payment_status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'paid' => 'Paid',
+                        'failed' => 'Failed',
+                    ])
+                    ->default('pending')
+                    ->required()
+                    ->label('Payment Status'),
+
                 TextInput::make('transaction_id')
-                    ->default(null),
+                    ->label('Transaction ID'),
+
             ]);
     }
 }

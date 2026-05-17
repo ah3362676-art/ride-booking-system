@@ -5,8 +5,10 @@ namespace App\Filament\Resources\TripPassengers\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\TextColumn;
+
 use Filament\Tables\Table;
+
+use Filament\Tables\Columns\TextColumn;
 
 class TripPassengersTable
 {
@@ -14,45 +16,67 @@ class TripPassengersTable
     {
         return $table
             ->columns([
-                TextColumn::make('trip_id')
-                    ->numeric()
+
+                TextColumn::make('trip.start_address')
+                    ->label('From')
+                    ->searchable()
+                    ->limit(20),
+
+                TextColumn::make('trip.end_address')
+                    ->label('To')
+                    ->searchable()
+                    ->limit(20),
+
+                TextColumn::make('user.name')
+                    ->label('Passenger')
+                    ->searchable()
                     ->sortable(),
-                TextColumn::make('user_id')
-                    ->numeric()
-                    ->sortable(),
-                TextColumn::make('trip_request_id')
-                    ->numeric()
-                    ->sortable(),
+
                 TextColumn::make('seats_booked')
-                    ->numeric()
+                    ->label('Seats')
                     ->sortable(),
+
                 TextColumn::make('price_per_seat')
-                    ->numeric()
-                    ->sortable(),
+                    ->money('EGP')
+                    ->label('Seat Price'),
+
                 TextColumn::make('total_price')
-                    ->money()
-                    ->sortable(),
+                    ->money('EGP')
+                    ->label('Total'),
+
                 TextColumn::make('status')
-                    ->badge(),
+                    ->colors([
+                        'warning' => 'pending',
+                        'success' => 'confirmed',
+                        'danger' => 'cancelled',
+                    ]),
+
+                TextColumn::make('payment_status')
+                    ->colors([
+                        'warning' => 'pending',
+                        'success' => 'paid',
+                        'danger' => 'failed',
+                    ]),
+
+                TextColumn::make('transaction_id')
+                    ->label('Transaction ID')
+                    ->searchable(),
+
                 TextColumn::make('created_at')
                     ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('payment_status')
-                    ->searchable(),
-                TextColumn::make('transaction_id')
-                    ->searchable(),
+                    ->since()
+                    ->label('Created'),
+
             ])
+
             ->filters([
                 //
             ])
+
             ->recordActions([
                 EditAction::make(),
             ])
+
             ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),

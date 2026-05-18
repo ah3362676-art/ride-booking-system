@@ -35,7 +35,7 @@ class VehicleController extends Controller
      */
     public function store(StoreVehicleRequest $request): JsonResponse
     {
-        $vehicle = $this->vehicleRepository->create(array_merge( $request->validated(),['user_id' => auth()->id()]))
+        $vehicle = $this->vehicleRepository->create(array_merge( $request->validated(),['user_id' => auth()->id()]));
 
         return response()->json([
             'message' => 'تم إضافة المركبة بنجاح',

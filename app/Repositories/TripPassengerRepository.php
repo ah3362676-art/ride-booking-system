@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Collection;
 
 class TripPassengerRepository implements TripPassengerRepositoryInterface
 {
+        //👉 دالة لإنشاء راكب جديد في رحلة
+
     public function create(array $data): TripPassenger
     {
         return TripPassenger::create($data);
     }
 
+        //هات كل الركاب في رحلة معينة
     public function getByTrip(int $tripId): Collection
     {
         return TripPassenger::with('user')
@@ -20,6 +23,7 @@ class TripPassengerRepository implements TripPassengerRepositoryInterface
             ->get();
     }
 
+        //هات كل الرحلات اللي شارك فيها راكب معين
     public function getByUser(int $userId): Collection
     {
         return TripPassenger::with('trip')

@@ -1,116 +1,156 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight flex items-center gap-2">
-            {{-- Icon --}}
-            <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-            </svg>
 
-            إنشاء طلب رحلة
+    <x-slot name="header">
+        <h2 class="text-xl font-bold text-white">
+            Create Trip Request
         </h2>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <form action="{{ route('trip-requests.store') }}" method="POST" class="space-y-4">
-                        @csrf
+    <div class="py-10 bg-gray-100 min-h-screen">
 
-                        {{-- Start --}}
+        <div class="max-w-4xl mx-auto px-4">
+
+            <div class="bg-white rounded-3xl shadow-lg p-8">
+
+                <h3 class="text-2xl font-bold mb-6">
+                    Trip Request Details
+                </h3>
+
+                <form action="{{ route('trip-requests.store') }}" method="POST" class="space-y-6">
+                    @csrf
+
+                    {{-- START ADDRESS --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Start Address
+                        </label>
+
+                        <input type="text" name="start_address"
+                               value="{{ old('start_address') }}"
+                               class="w-full rounded-2xl border-gray-200 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                        @error('start_address')
+                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- START COORDINATES --}}
+                    <div class="grid md:grid-cols-2 gap-4">
+
                         <div>
-                            <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z"/>
-                                </svg>
-                                Start Address
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Start Latitude
                             </label>
 
-                            <input type="text" name="start_address" id="start_address"
-                                   value="{{ old('start_address') }}"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <input type="number" step="any" name="start_lat"
+                                   value="{{ old('start_lat') }}"
+                                   class="w-full rounded-2xl border-gray-200 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                            @error('start_lat')
+                                <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        {{-- Start coords --}}
-                        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                            <div>
-                                <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13V7m0 13l6-3m0 0V4m0 13l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4"/>
-                                    </svg>
-                                    Start Lat
-                                </label>
-
-                                <input type="text" name="start_lat" value="{{ old('start_lat') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            </div>
-
-                            <div>
-                                <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                              d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13V7m0 13l6-3m0 0V4m0 13l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4"/>
-                                    </svg>
-                                    Start Lng
-                                </label>
-
-                                <input type="text" name="start_lng" value="{{ old('start_lng') }}"
-                                       class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
-                            </div>
-                        </div>
-
-                        {{-- End --}}
                         <div>
-                            <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                <svg class="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13V7m0 13l6-3m0 0V4m0 13l5.447 2.724A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4"/>
-                                </svg>
-                                End Address
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Start Longitude
                             </label>
 
-                            <input type="text" name="end_address" value="{{ old('end_address') }}"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <input type="number" step="any" name="start_lng"
+                                   value="{{ old('start_lng') }}"
+                                   class="w-full rounded-2xl border-gray-200 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                            @error('start_lng')
+                                <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        {{-- Seats --}}
+                    </div>
+
+                    {{-- END ADDRESS --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            End Address
+                        </label>
+
+                        <input type="text" name="end_address"
+                               value="{{ old('end_address') }}"
+                               class="w-full rounded-2xl border-gray-200 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                        @error('end_address')
+                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- END COORDINATES --}}
+                    <div class="grid md:grid-cols-2 gap-4">
+
                         <div>
-                            <label class="flex items-center gap-2 text-sm font-medium text-gray-700">
-                                <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0"/>
-                                </svg>
-                                Seats Required
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                End Latitude
                             </label>
 
-                            <input type="number" name="requested_seats"
-                                   value="{{ old('requested_seats', 1) }}"
-                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm">
+                            <input type="number" step="any" name="end_lat"
+                                   value="{{ old('end_lat') }}"
+                                   class="w-full rounded-2xl border-gray-200 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                            @error('end_lat')
+                                <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                        {{-- Actions --}}
-                        <div class="flex items-center gap-3">
-                            <button type="submit"
-                                    class="rounded-lg bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700 flex items-center gap-2">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M5 13l4 4L19 7"/>
-                                </svg>
-                                Save
-                            </button>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                End Longitude
+                            </label>
 
-                            <a href="{{ route('trip-requests.index') }}"
-                               class="rounded-lg bg-gray-200 px-4 py-2 text-gray-700 hover:bg-gray-300">
-                                Cancel
-                            </a>
+                            <input type="number" step="any" name="end_lng"
+                                   value="{{ old('end_lng') }}"
+                                   class="w-full rounded-2xl border-gray-200 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                            @error('end_lng')
+                                <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                            @enderror
                         </div>
 
-                    </form>
-                </div>
+                    </div>
+
+                    {{-- SEATS --}}
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Requested Seats
+                        </label>
+
+                        <input type="number" name="requested_seats"
+                               value="{{ old('requested_seats', 1) }}"
+                               class="w-full rounded-2xl border-gray-200 p-3 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+
+                        @error('requested_seats')
+                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- ACTIONS --}}
+                    <div class="flex items-center gap-3 pt-4">
+
+                        <button type="submit"
+                                class="bg-black text-white px-6 py-3 rounded-2xl hover:bg-gray-800 transition">
+                            Save Request
+                        </button>
+
+                        <a href="{{ route('trip-requests.index') }}"
+                           class="bg-gray-200 text-gray-700 px-6 py-3 rounded-2xl hover:bg-gray-300 transition">
+                            Cancel
+                        </a>
+
+                    </div>
+
+                </form>
+
             </div>
+
         </div>
+
     </div>
+
 </x-app-layout>

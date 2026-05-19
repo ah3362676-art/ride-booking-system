@@ -19,6 +19,13 @@ return new class extends Migration
                 ->constrained('users')
                 ->cascadeOnDelete();
 
+
+            // الرحلة المطابقة إن وجدت
+            $table->foreignId('matched_trip_id')
+                ->nullable()
+                ->constrained('trips')
+                ->nullOnDelete();
+
             // عنوان البداية
             $table->string('start_address');
 
@@ -45,11 +52,6 @@ return new class extends Migration
             $table->enum('status', ['pending', 'matched', 'accepted', 'rejected', 'cancelled'])
                 ->default('pending');
 
-            // الرحلة المطابقة إن وجدت
-            $table->foreignId('matched_trip_id')
-                ->nullable()
-                ->constrained('trips')
-                ->nullOnDelete();
 
             // ملاحظات إضافية
             $table->text('notes')->nullable();

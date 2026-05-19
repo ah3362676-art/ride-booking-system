@@ -82,8 +82,8 @@ class TripRequest extends Model
     //  * الراكب الذي تم قبوله فعليًا داخل رحلة
     //  * سنستخدمها لاحقًا
     //  */
-    // public function passenger()
-    // {
-    //     return $this->hasOne(TripPassenger::class);
-    // }
+    public function passenger()
+    {
+        return $this->hasOne(TripPassenger::class);
+    }
 }

@@ -8,13 +8,13 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-// chat message
-
 Broadcast::channel('trip-chat.{tripId}', function ($user, $tripId) {
 
     $trip = Trip::find($tripId);
 
-    if (! $trip) return false;
+    if (! $trip) {
+        return false;
+    }
 
     return
         $trip->driver_id === $user->id

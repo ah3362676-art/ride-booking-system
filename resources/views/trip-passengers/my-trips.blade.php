@@ -75,7 +75,6 @@
                         </span>
                     @endif
 
-                    @if($passenger->status === 'accepted')
 
                     {{-- Chat --}}
                     <a href="{{ route('chat.show', $passenger->trip_id) }}"
@@ -88,7 +87,6 @@
 
                         Chat
                     </a>
-                    @endif
 
                 </div>
 

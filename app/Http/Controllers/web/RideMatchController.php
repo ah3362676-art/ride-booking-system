@@ -30,6 +30,7 @@ class RideMatchController extends Controller
     {
         abort_if($tripRequest->rider_id !== auth()->id(), 403);
 
+ //  * جلب كل المطابقات الخاصة بطلب رحلة معين
         $matches = $this->rideMatchRepository->getByTripRequest($tripRequest->id);
 
         return view('ride-matches.index', compact('tripRequest', 'matches'));

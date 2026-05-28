@@ -18,7 +18,8 @@ Broadcast::channel('trip-chat.{tripId}', function ($user, $tripId) {
 
     return
         $trip->driver_id === $user->id
-        || TripPassenger::where('trip_id', $tripId)
-            ->where('user_id', $user->id)
-            ->exists();
+        || TripPassenger::where
+        ('trip_id', $tripId)
+        ->where('user_id', $user->id)
+        ->exists();
 });

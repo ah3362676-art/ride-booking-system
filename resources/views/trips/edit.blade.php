@@ -6,219 +6,106 @@
         </h2>
     </x-slot>
 
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+
     <div class="py-10 bg-gray-100 min-h-screen">
 
         <div class="max-w-4xl mx-auto px-4">
 
-            <div class="bg-white rounded-3xl shadow-lg p-8">
+            <div class="bg-white rounded-3xl shadow-xl p-8">
 
                 <h3 class="text-2xl font-bold mb-6">
                     Update Trip Details
                 </h3>
 
-                <form action="{{ route('trips.update', $trip) }}" method="POST" class="space-y-6">
-
+                <form action="{{ route('trips.update', $trip) }}" method="POST">
                     @csrf
                     @method('PUT')
 
                     <!-- Vehicle -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Vehicle
-                        </label>
+                    <select name="vehicle_id" class="w-full p-3 border rounded-2xl mb-4">
+                        @foreach ($vehicles as $vehicle)
+                            <option value="{{ $vehicle->id }}"
+                                @selected($trip->vehicle_id == $vehicle->id)>
+                                {{ $vehicle->brand }} - {{ $vehicle->model }}
+                            </option>
+                        @endforeach
+                    </select>
 
-                        <select name="vehicle_id"
-                            class="w-full rounded-2xl border-gray-200 p-3 shadow-sm">
+                    <!-- Addresses -->
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
 
-                            <option value="">Select vehicle</option>
+                        <input type="text"
+                               id="start_address"
+                               name="start_address"
+                               value="{{ $trip->start_address }}"
+                               class="p-3 border rounded-2xl"
+                               placeholder="Start Address">
 
-                            @foreach ($vehicles as $vehicle)
-                                <option value="{{ $vehicle->id }}"
-                                    @selected(old('vehicle_id', $trip->vehicle_id) == $vehicle->id)>
-                                    {{ $vehicle->brand }} - {{ $vehicle->model }} ({{ $vehicle->plate_number }})
-                                </option>
-                            @endforeach
-
-                        </select>
-
-                        @error('vehicle_id')
-                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Route -->
-                    <div class="grid md:grid-cols-2 gap-4">
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Start Address
-                            </label>
-
-                            <input type="text" name="start_address"
-                                value="{{ old('start_address', $trip->start_address) }}"
-                                class="w-full rounded-2xl border-gray-200 p-3 shadow-sm">
-
-                            @error('start_address')
-                                <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                End Address
-                            </label>
-
-                            <input type="text" name="end_address"
-                                value="{{ old('end_address', $trip->end_address) }}"
-                                class="w-full rounded-2xl border-gray-200 p-3 shadow-sm">
-
-                            @error('end_address')
-                                <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <input type="text"
+                               id="end_address"
+                               name="end_address"
+                               value="{{ $trip->end_address }}"
+                               class="p-3 border rounded-2xl"
+                               placeholder="End Address">
 
                     </div>
 
-                    <!-- Coordinates -->
-                    <div class="grid md:grid-cols-2 gap-4">
+                    <!-- Hidden Coordinates -->
+                    <input type="hidden" id="start_lat" name="start_lat" value="{{ $trip->start_lat }}">
+                    <input type="hidden" id="start_lng" name="start_lng" value="{{ $trip->start_lng }}">
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Start Coordinates
-                            </label>
+                    <input type="hidden" id="end_lat" name="end_lat" value="{{ $trip->end_lat }}">
+                    <input type="hidden" id="end_lng" name="end_lng" value="{{ $trip->end_lng }}">
 
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="text" name="start_lat"
-                                    value="{{ old('start_lat', $trip->start_lat) }}"
-                                    placeholder="Lat"
-                                    class="rounded-2xl border-gray-200 p-3 shadow-sm">
-
-                                <input type="text" name="start_lng"
-                                    value="{{ old('start_lng', $trip->start_lng) }}"
-                                    placeholder="Lng"
-                                    class="rounded-2xl border-gray-200 p-3 shadow-sm">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                End Coordinates
-                            </label>
-
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="text" name="end_lat"
-                                    value="{{ old('end_lat', $trip->end_lat) }}"
-                                    placeholder="Lat"
-                                    class="rounded-2xl border-gray-200 p-3 shadow-sm">
-
-                                <input type="text" name="end_lng"
-                                    value="{{ old('end_lng', $trip->end_lng) }}"
-                                    placeholder="Lng"
-                                    class="rounded-2xl border-gray-200 p-3 shadow-sm">
-                            </div>
-                        </div>
-
-                    </div>
+                    <!-- Map Button -->
+                    <button type="button"
+                            onclick="openMap()"
+                            class="bg-blue-600 text-white px-4 py-2 rounded-xl mb-4">
+                        📍 Edit Locations on Map
+                    </button>
 
                     <!-- Time -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Departure Time
-                        </label>
-
-                        <input type="datetime-local" name="departure_time"
-                            value="{{ old('departure_time', $trip->departure_time?->format('Y-m-d\TH:i')) }}"
-                            class="w-full rounded-2xl border-gray-200 p-3 shadow-sm">
-
-                        @error('departure_time')
-                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <input type="datetime-local"
+                           name="departure_time"
+                           value="{{ $trip->departure_time?->format('Y-m-d\TH:i') }}"
+                           class="w-full p-3 border rounded-2xl mb-4">
 
                     <!-- Seats + Price -->
-                    <div class="grid md:grid-cols-2 gap-4">
+                    <div class="grid md:grid-cols-2 gap-4 mb-4">
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Available Seats
-                            </label>
+                        <input type="number"
+                               name="available_seats"
+                               value="{{ $trip->available_seats }}"
+                               class="p-3 border rounded-2xl">
 
-                            <input type="number" name="available_seats"
-                                value="{{ old('available_seats', $trip->available_seats) }}"
-                                class="w-full rounded-2xl border-gray-200 p-3 shadow-sm">
-
-                            @error('available_seats')
-                                <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">
-                                Price per Seat
-                            </label>
-
-                            <input type="number" step="0.01" name="price_per_seat"
-                                value="{{ old('price_per_seat', $trip->price_per_seat) }}"
-                                class="w-full rounded-2xl border-gray-200 p-3 shadow-sm">
-
-                            @error('price_per_seat')
-                                <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                            @enderror
-                        </div>
+                        <input type="number"
+                               step="0.01"
+                               name="price_per_seat"
+                               value="{{ $trip->price_per_seat }}"
+                               class="p-3 border rounded-2xl">
 
                     </div>
 
                     <!-- Status -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Status
-                        </label>
-
-                        <select name="status"
-                            class="w-full rounded-2xl border-gray-200 p-3 shadow-sm">
-
-                            @foreach (['scheduled','in_progress','completed','cancelled'] as $status)
-                                <option value="{{ $status }}"
-                                    @selected(old('status', $trip->status) === $status)>
-                                    {{ ucfirst($status) }}
-                                </option>
-                            @endforeach
-
-                        </select>
-
-                        @error('status')
-                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    <select name="status" class="w-full p-3 border rounded-2xl mb-4">
+                        @foreach (['scheduled','in_progress','completed','cancelled'] as $status)
+                            <option value="{{ $status }}"
+                                @selected($trip->status == $status)>
+                                {{ ucfirst($status) }}
+                            </option>
+                        @endforeach
+                    </select>
 
                     <!-- Notes -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">
-                            Notes
-                        </label>
+                    <textarea name="notes"
+                              class="w-full p-3 border rounded-2xl mb-4"
+                              rows="3">{{ $trip->notes }}</textarea>
 
-                        <textarea name="notes" rows="4"
-                            class="w-full rounded-2xl border-gray-200 p-3 shadow-sm">{{ old('notes', $trip->notes) }}</textarea>
-
-                        @error('notes')
-                            <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    <!-- Actions -->
-                    <div class="flex items-center gap-3 pt-4">
-
-                        <button type="submit"
-                            class="bg-black text-white px-6 py-3 rounded-2xl hover:bg-gray-800 transition">
-                            Update Trip
-                        </button>
-
-                        <a href="{{ route('trips.index') }}"
-                            class="bg-gray-200 text-gray-700 px-6 py-3 rounded-2xl hover:bg-gray-300 transition">
-                            Cancel
-                        </a>
-
-                    </div>
+                    <button class="bg-black text-white w-full py-3 rounded-2xl">
+                        Update Trip
+                    </button>
 
                 </form>
 
@@ -227,5 +114,141 @@
         </div>
 
     </div>
+
+    <!-- MODAL MAP -->
+    <div id="mapModal"
+         class="hidden fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+
+        <div class="bg-white p-4 rounded-2xl w-[95%] max-w-3xl">
+
+            <div class="flex justify-between mb-3">
+                <h2 class="font-bold">Edit Locations</h2>
+                <button onclick="closeMap()">❌</button>
+            </div>
+
+            <div class="flex gap-2 mb-3">
+
+                <button type="button" onclick="getMyLocation()"
+                        class="bg-blue-600 text-white px-3 py-2 rounded-xl w-full">
+                    📍 My Location
+                </button>
+
+                <button type="button" onclick="setMode('start')"
+                        class="bg-green-600 text-white px-3 py-2 rounded-xl w-full">
+                    Start
+                </button>
+
+                <button type="button" onclick="setMode('end')"
+                        class="bg-black text-white px-3 py-2 rounded-xl w-full">
+                    End
+                </button>
+
+            </div>
+
+            <div id="map" style="height: 420px;"></div>
+
+            <button onclick="closeMap()"
+                    class="mt-3 bg-green-600 text-white w-full py-2 rounded-xl">
+                Done
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script>
+
+        let map;
+        let startMarker;
+        let endMarker;
+        let mode = "start";
+
+        function openMap() {
+
+            document.getElementById('mapModal').classList.remove('hidden');
+
+            if (!map) {
+
+                map = L.map('map').setView([30.0444, 31.2357], 10);
+
+                L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                }).addTo(map);
+
+                map.on('click', function (e) {
+                    setPoint(e.latlng.lat, e.latlng.lng);
+                });
+            }
+
+            map.invalidateSize();
+
+            // load existing markers
+            loadExisting();
+        }
+
+        function closeMap() {
+            document.getElementById('mapModal').classList.add('hidden');
+        }
+
+        function setMode(m) {
+            mode = m;
+        }
+
+        function setPoint(lat, lng) {
+
+            if (mode === "start") {
+
+                if (startMarker) map.removeLayer(startMarker);
+
+                startMarker = L.marker([lat, lng]).addTo(map);
+
+                document.getElementById('start_lat').value = lat;
+                document.getElementById('start_lng').value = lng;
+
+            } else {
+
+                if (endMarker) map.removeLayer(endMarker);
+
+                endMarker = L.marker([lat, lng]).addTo(map);
+
+                document.getElementById('end_lat').value = lat;
+                document.getElementById('end_lng').value = lng;
+            }
+        }
+
+        function getMyLocation() {
+
+            navigator.geolocation.getCurrentPosition(function (pos) {
+
+                let lat = pos.coords.latitude;
+                let lng = pos.coords.longitude;
+
+                map.setView([lat, lng], 15);
+                setPoint(lat, lng);
+
+            });
+        }
+
+        function loadExisting() {
+
+            let slat = document.getElementById('start_lat').value;
+            let slng = document.getElementById('start_lng').value;
+
+            let elat = document.getElementById('end_lat').value;
+            let elng = document.getElementById('end_lng').value;
+
+            if (slat && slng) {
+                startMarker = L.marker([slat, slng]).addTo(map);
+            }
+
+            if (elat && elng) {
+                endMarker = L.marker([elat, elng]).addTo(map);
+            }
+        }
+
+    </script>
 
 </x-app-layout>

@@ -52,16 +52,16 @@
                     {{-- Payment --}}
                     @if($passenger->payment_status !== 'paid')
 
-                        <a href="{{ route('payment.pay', $passenger->id) }}"
-                           class="flex items-center gap-1 text-green-600 font-semibold hover:text-green-800">
+                                            <a href="{{ route('payments.pay', $passenger->id) }}"
+                    class="flex items-center gap-1 text-green-600 font-semibold hover:text-green-800">
 
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M12 8c-1.657 0-3 1.343-3 3v1h6v-1c0-1.657-1.343-3-3-3z"/>
-                            </svg>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-1.657 0-3 1.343-3 3v1h6v-1c0-1.657-1.343-3-3-3z"/>
+                        </svg>
 
-                            Pay Now
-                        </a>
+                        Pay Now
+                    </a>
 
                     @else
                         <span class="flex items-center gap-1 text-green-700 font-bold">

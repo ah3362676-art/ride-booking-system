@@ -16,6 +16,7 @@ class ChatController extends Controller
 
         $allowed = $trip->driver_id === $user->id
             || $trip->passengers()->where('user_id', $user->id)->exists();
+            // هل المستخدم: سائق الرحلة؟ أوراكب داخل الرحلة؟
 
         abort_if(! $allowed, 403);
 

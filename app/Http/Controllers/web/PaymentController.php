@@ -14,20 +14,23 @@ class PaymentController extends Controller
     ) {}
 
     // بدء الدفع
-    public function pay(TripPassenger $tripPassenger)
-    {
-        abort_if($tripPassenger->payment_status === 'paid', 403);
+public function pay(TripPassenger $tripPassenger)
+{
+    abort_if($tripPassenger->payment_status === 'paid', 403);
 
-        $url = $this->paymobService->pay($tripPassenger);
+    $user = $tripPassenger->user;
 
-        return redirect($url);
-    }
+
+    $url = $this->paymobService->pay($tripPassenger);
+
+    return redirect($url);
+}
 
     // callback (redirect فقط)
     public function callback()
     {
         return redirect()
-            ->route('payment.success');
+            ->route('my-trips');
     }
 
     // webhook (التأكيد الحقيقي)
@@ -66,5 +69,7 @@ public function success(Request $request)
         'data' => $data
     ]);
 }
+
+
 
 }

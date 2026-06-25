@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\ChatController;
 use App\Http\Controllers\Web\PaymentController;
+use App\Services\PaymobService;
 use App\Http\Controllers\Web\RideMatchController;
 use App\Http\Controllers\Web\UserController;
 use App\Http\Controllers\Web\VehicleController;
@@ -12,56 +13,73 @@ use App\Http\Controllers\Web\TripController;
 use App\Http\Controllers\Web\TripPassengerController;
 use Illuminate\Support\Facades\Route;
 
-
 /*
 |--------------------------------------------------------------------------
 | Public Route
 |--------------------------------------------------------------------------
 */
+
 Route::get('/', function () {
     return view('welcome');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Guest Routes (لغير المسجلين)
+| Guest Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('guest')->group(function () {
-    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-    Route::post('/register', [AuthController::class, 'register'])->name('register.store');
 
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.store');
+Route::middleware('guest')->group(function () {
+
+    Route::get('/register', [AuthController::class, 'showRegister'])
+        ->name('register');
+
+    Route::post('/register', [AuthController::class, 'register'])
+        ->name('register.store');
+
+    Route::get('/login', [AuthController::class, 'showLogin'])
+        ->name('login');
+
+    Route::post('/login', [AuthController::class, 'login'])
+        ->name('login.store');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Auth Routes (للمستخدم المسجل)
+| Auth Routes
 |--------------------------------------------------------------------------
 */
+
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // Dashboard
     Route::view('/dashboard', 'dashboard')->name('dashboard');
 
     // Logout
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])
+        ->name('logout');
 
     /*
     |--------------------------------------------------------------------------
     | Profile
     |--------------------------------------------------------------------------
     */
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/profile', [ProfileController::class, 'edit'])
+        ->name('profile.edit');
+
+    Route::patch('/profile', [ProfileController::class, 'update'])
+        ->name('profile.update');
+
+    Route::delete('/profile', [ProfileController::class, 'destroy'])
+        ->name('profile.destroy');
 
     /*
     |--------------------------------------------------------------------------
     | Vehicles
     |--------------------------------------------------------------------------
     */
+
     Route::resource('vehicles', VehicleController::class);
 
     /*
@@ -69,58 +87,101 @@ Route::middleware(['auth', 'verified'])->group(function () {
     | Trips
     |--------------------------------------------------------------------------
     */
+
     Route::resource('trips', TripController::class);
 
-/*
+    /*
     |--------------------------------------------------------------------------
-    | Triprequests
+    | Trip Requests
     |--------------------------------------------------------------------------
     */
-     Route::resource('trip-requests', TripRequestController::class);
 
-      /*
+    Route::resource('trip-requests', TripRequestController::class);
+
+    /*
     |--------------------------------------------------------------------------
-    | Ride Matches Routes
+    | Ride Matches
     |--------------------------------------------------------------------------
     */
+
     Route::prefix('trip-requests/{tripRequest}/matches')->group(function () {
-        Route::get('/', [RideMatchController::class, 'index'])->name('ride-matches.index');
-        Route::post('/generate', [RideMatchController::class, 'generate'])->name('ride-matches.generate');
-        Route::get('/{rideMatch}', [RideMatchController::class, 'show'])->name('ride-matches.show');
-        Route::post('/{rideMatch}/accept', [RideMatchController::class, 'accept'])->name('ride-matches.accept');
-        Route::post('/{rideMatch}/reject', [RideMatchController::class, 'reject'])->name('ride-matches.reject');
+
+        Route::get('/', [RideMatchController::class, 'index'])
+            ->name('ride-matches.index');
+
+        Route::post('/generate', [RideMatchController::class, 'generate'])
+            ->name('ride-matches.generate');
+
+        Route::get('/{rideMatch}', [RideMatchController::class, 'show'])
+            ->name('ride-matches.show');
+
+        Route::post('/{rideMatch}/accept', [RideMatchController::class, 'accept'])
+            ->name('ride-matches.accept');
+
+        Route::post('/{rideMatch}/reject', [RideMatchController::class, 'reject'])
+            ->name('ride-matches.reject');
     });
 
-         /*
+    /*
     |--------------------------------------------------------------------------
-    |  Routes
+    | My Trips
     |--------------------------------------------------------------------------
     */
+
     Route::get('/my-trips', [TripPassengerController::class, 'myTrips'])
-    ->name('my-trips');
+        ->name('my-trips');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Chat
+    |--------------------------------------------------------------------------
+    */
 
-Route::post('/trips/{trip}/messages', [ChatController::class, 'store'])
-    ->name('messages.store');
+    Route::post('/trips/{trip}/messages', [ChatController::class, 'store'])
+        ->name('messages.store');
 
     Route::get('/chat/{trip}', [ChatController::class, 'show'])
-    ->name('chat.show');
+        ->name('chat.show');
 
+    /*
+    |--------------------------------------------------------------------------
+    | Paymob Test
+    |--------------------------------------------------------------------------
+    */
 
+    Route::get('/paymob-test', function (PaymobService $paymob) {
+        return $paymob->authenticate();
+    });
 
-Route::get('/pay/{tripPassenger}', [PaymentController::class, 'pay'])
-    ->name('payment.pay');
+    /*
+    |--------------------------------------------------------------------------
+    | Payments (Authenticated)
+    |--------------------------------------------------------------------------
+    */
 
-Route::get('/paymob/callback', [PaymentController::class, 'callback'])
-    ->name('paymob.callback');
+    Route::get(
+        '/payments/{tripPassenger}/pay',
+        [PaymentController::class, 'pay']
+    )->name('payments.pay');
 
-Route::post('/paymob/webhook', [PaymentController::class, 'webhook'])
-    ->name('paymob.webhook');
-
-Route::get('/payment-success', [PaymentController::class, 'success'])
-    ->name('payment.success');
-
-Route::get('/payment-failed', [PaymentController::class, 'failed'])
-    ->name('payment.failed');
-
+    Route::get(
+        '/payments/success',
+        [PaymentController::class, 'success']
+    )->name('payment.success');
 });
+
+/*
+|--------------------------------------------------------------------------
+| Payments Callback + Webhook (Public - No Auth)
+|--------------------------------------------------------------------------
+*/
+
+Route::get(
+    '/payments/callback',
+    [PaymentController::class, 'callback']
+)->name('payments.callback');
+
+Route::post(
+    '/payments/webhook',
+    [PaymentController::class, 'webhook']
+)->name('payments.webhook');

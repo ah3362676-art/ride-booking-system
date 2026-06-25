@@ -2,7 +2,7 @@
 
     <x-slot name="header">
         <h2 class="text-xl font-bold text-white">
-            My Trip Requests
+             Trip Requests
         </h2>
     </x-slot>
 

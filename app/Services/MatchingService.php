@@ -33,6 +33,7 @@ class MatchingService
             ->where('driver_id', '!=', $tripRequest->rider_id)
             ->get();
 
+        // $matches = [];
         $matches = collect();
 
         foreach ($candidateTrips as $trip) {

@@ -3,22 +3,12 @@
 namespace App\Services;
 
 use App\Models\TripPassenger;
+
 use Illuminate\Support\Facades\Http;
 
 class PaymobService
 {
-    public function pay(TripPassenger $tripPassenger)
-    {
-        $token = $this->auth();
-
-        $order = $this->createOrder($token, $tripPassenger);
-
-        $paymentKey = $this->paymentKey($token, $order, $tripPassenger);
-
-        return $this->paymentUrl($paymentKey);
-    }
-
-    private function auth()
+    public function authenticate()
     {
         $response = Http::post(
             'https://accept.paymob.com/api/auth/tokens',
@@ -30,63 +20,86 @@ class PaymobService
         return $response->json()['token'];
     }
 
-    private function createOrder($token, TripPassenger $tripPassenger)
-    {
+    public function createOrder( float $amount, int $tripPassengerId) {
+        $token = $this->authenticate();
+
         $response = Http::post(
             'https://accept.paymob.com/api/ecommerce/orders',
             [
                 'auth_token' => $token,
                 'delivery_needed' => false,
-                'amount_cents' => $tripPassenger->total_price * 100,
+                'amount_cents' => (int) ($amount * 100),
                 'currency' => 'EGP',
-                'merchant_order_id' => (string) $tripPassenger->id,
+                'merchant_order_id' => $tripPassengerId,
                 'items' => [],
             ]
         );
 
-return $response->json('id');
- }
+        return $response->json();
+    }
 
-    private function paymentKey($token, $orderId, TripPassenger $tripPassenger)
-    {
+    public function generatePaymentKey(TripPassenger $tripPassenger,$user) {
+
+        $token = $this->authenticate();
+
+        $order = $this->createOrder(
+            $tripPassenger->total_price,
+            $tripPassenger->id
+        );
+
         $response = Http::post(
             'https://accept.paymob.com/api/acceptance/payment_keys',
             [
                 'auth_token' => $token,
-                'amount_cents' => $tripPassenger->total_price * 100,
+
+                'amount_cents' => (int) ($tripPassenger->total_price * 100),
+
                 'expiration' => 3600,
-                'order_id' => $orderId,
+
+                'order_id' => $order['id'],
 
                 'billing_data' => [
-                    'first_name' => auth()->user()->name,
+                    'first_name' => $user->name,
                     'last_name' => 'User',
-                    'email' => auth()->user()->email,
-                    'phone_number' => '+201000000000',
-                    'city' => 'Cairo',
-                    'country' => 'EG',
+                    'email' => $user->email,
+                    'phone_number' => $user->phone ?? '+201000000000',
+
+                    'apartment' => 'NA',
+                    'floor' => 'NA',
                     'street' => 'NA',
                     'building' => 'NA',
-                    'floor' => 'NA',
-                    'apartment' => 'NA',
-                    'postal_code' => 'NA',
-                    'state' => 'NA',
                     'shipping_method' => 'NA',
+                    'postal_code' => '12345',
+                    'city' => 'Cairo',
+                    'country' => 'EG',
+                    'state' => 'Cairo',
                 ],
 
                 'currency' => 'EGP',
-                'integration_id' => config('services.paymob.integration_id'),
 
-                'redirection_url' => route('paymob.callback'),
+                'integration_id' => config('services.paymob.integration_id'),
             ]
         );
 
-        return $response->json()['token'];
+        return $response->json();
     }
 
-    private function paymentUrl($paymentKey)
-    {
-        $iframeId = config('services.paymob.iframe_id');
+    public function getPaymentUrl( TripPassenger $tripPassenger, $user ) {
+        $paymentKey = $this->generatePaymentKey(
+            $tripPassenger,
+            $user
+        );
 
-        return "https://accept.paymob.com/api/acceptance/iframes/{$iframeId}?payment_token={$paymentKey}";
+        return 'https://accept.paymob.com/api/acceptance/iframes/'
+            . config('services.paymob.iframe_id')
+            . '?payment_token='
+            . $paymentKey['token'];
     }
+
+public function pay(TripPassenger $tripPassenger) {
+    return $this->getPaymentUrl(
+        $tripPassenger,
+        $tripPassenger->user
+    );
+}
 }

@@ -58,6 +58,30 @@ public function pay(TripPassenger $tripPassenger)
 
         return response()->json(['success' => true]);
     }
+
+
+    public function wallet(Request $request, TripPassenger $tripPassenger)
+{
+    abort_if($tripPassenger->payment_status === 'paid', 403);
+
+    $request->validate([
+        'phone' => ['required', 'regex:/^01[0125][0-9]{8}$/'],
+    ]);
+
+    $response = $this->paymobService->wallet(
+        $tripPassenger,
+        $request->phone
+    );
+
+    if (isset($response['redirect_url'])) {
+        return redirect($response['redirect_url']);
+    }
+
+    return back()->withErrors([
+        'payment' => $response['message'] ?? 'Wallet payment failed.'
+    ]);
+}
+
 public function success(Request $request)
 {
     // بيانات Paymob بيرجعها هنا

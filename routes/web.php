@@ -153,23 +153,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return $paymob->authenticate();
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Payments (Authenticated)
-    |--------------------------------------------------------------------------
-    */
+  /*
+|--------------------------------------------------------------------------
+| Payments (Authenticated)
+|--------------------------------------------------------------------------
+*/
 
-    Route::get(
-        '/payments/{tripPassenger}/pay',
-        [PaymentController::class, 'pay']
-    )->name('payments.pay');
+Route::get(
+    '/payments/{tripPassenger}/pay',
+    [PaymentController::class, 'pay']
+)->name('payments.pay');
 
-    Route::get(
-        '/payments/success',
-        [PaymentController::class, 'success']
-    )->name('payment.success');
+Route::post(
+    '/payments/{tripPassenger}/wallet',
+    [PaymentController::class, 'wallet']
+)->name('payments.wallet');
+
+Route::get(
+    '/payments/success',
+    [PaymentController::class, 'success']
+)->name('payments.success');
 });
-
 /*
 |--------------------------------------------------------------------------
 | Payments Callback + Webhook (Public - No Auth)

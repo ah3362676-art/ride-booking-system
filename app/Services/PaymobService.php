@@ -38,7 +38,7 @@ class PaymobService
         return $response->json();
     }
 
-    public function generatePaymentKey(TripPassenger $tripPassenger,$user) {
+    public function generatePaymentKey(TripPassenger $tripPassenger,$user,int $integrationId) {
 
         $token = $this->authenticate();
 
@@ -77,8 +77,7 @@ class PaymobService
 
                 'currency' => 'EGP',
 
-                'integration_id' => config('services.paymob.integration_id'),
-            ]
+            'integration_id' => $integrationId,            ]
         );
 
         return $response->json();
@@ -87,7 +86,8 @@ class PaymobService
     public function getPaymentUrl( TripPassenger $tripPassenger, $user ) {
         $paymentKey = $this->generatePaymentKey(
             $tripPassenger,
-            $user
+            $user,
+            config('services.paymob.integration_id')
         );
 
         return 'https://accept.paymob.com/api/acceptance/iframes/'
@@ -96,10 +96,46 @@ class PaymobService
             . $paymentKey['token'];
     }
 
+
+
 public function pay(TripPassenger $tripPassenger) {
     return $this->getPaymentUrl(
         $tripPassenger,
         $tripPassenger->user
     );
 }
+
+
+public function payWithWallet( TripPassenger $tripPassenger, $user, string $phone)
+ {
+    $paymentKey = $this->generatePaymentKey(
+        $tripPassenger,
+        $user,
+        config('services.paymob.wallet_integration_id')
+    );
+
+    $response = Http::post(
+        'https://accept.paymob.com/api/acceptance/payments/pay',
+        [
+            'source' => [
+                'identifier' => $phone,
+                'subtype' => 'WALLET',
+            ],
+
+            'payment_token' => $paymentKey['token'],
+        ]
+    );
+
+    return $response->json();
+}
+
+public function wallet(TripPassenger $tripPassenger, string $phone)
+{
+    return $this->payWithWallet(
+        $tripPassenger,
+        $tripPassenger->user,
+        $phone
+    );
+}
+
 }

@@ -46,49 +46,64 @@
                     </p>
                 </div>
 
-                {{-- Actions --}}
-                <div class="mt-4 flex items-center gap-4">
+{{-- Actions --}}
+<div class="mt-4">
 
-                    {{-- Payment --}}
-                    @if($passenger->payment_status !== 'paid')
+    @if($passenger->payment_status !== 'paid')
 
-                                            <a href="{{ route('payments.pay', $passenger->id) }}"
-                    class="flex items-center gap-1 text-green-600 font-semibold hover:text-green-800">
+        <div class="flex flex-wrap items-center gap-3">
 
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 1.343-3 3v1h6v-1c0-1.657-1.343-3-3-3z"/>
-                        </svg>
+            {{-- Card Payment --}}
+            <a href="{{ route('payments.pay', $passenger) }}"
+               class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                💳 Pay with Card
+            </a>
 
-                        Pay Now
-                    </a>
+            {{-- Wallet Payment --}}
+            <form action="{{ route('payments.wallet', $passenger) }}" method="POST" class="flex items-center gap-2">
+                @csrf
 
-                    @else
-                        <span class="flex items-center gap-1 text-green-700 font-bold">
+                <input
+                    type="text"
+                    name="phone"
+                    placeholder="01012345678"
+                    class="border rounded-lg px-3 py-2"
+                    required
+                >
 
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                      d="M5 13l4 4L19 7"/>
-                            </svg>
+                <button
+                    type="submit"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                    📱 Wallet
+                </button>
+            </form>
 
-                            Paid
-                        </span>
-                    @endif
+            {{-- Chat --}}
+            <a href="{{ route('chat.show', $passenger->trip_id) }}"
+               class="text-blue-600 hover:text-blue-800 font-semibold">
+                💬 Chat
+            </a>
 
+        </div>
 
-                    {{-- Chat --}}
-                    <a href="{{ route('chat.show', $passenger->trip_id) }}"
-                       class="flex items-center gap-1 text-blue-600 hover:text-blue-800">
+    @else
 
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                  d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.3-3.9C3.5 15 3 13.5 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
-                        </svg>
+        <div class="flex items-center gap-4">
 
-                        Chat
-                    </a>
+            <span class="text-green-700 font-bold">
+                ✅ Paid
+            </span>
 
-                </div>
+            <a href="{{ route('chat.show', $passenger->trip_id) }}"
+               class="text-blue-600 hover:text-blue-800 font-semibold">
+                💬 Chat
+            </a>
+
+        </div>
+
+    @endif
+
+</div>
 
             </div>
 

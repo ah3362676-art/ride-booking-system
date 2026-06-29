@@ -39,6 +39,8 @@ return [
     'api_key' => env('PAYMOB_API_KEY'),
     'integration_id' => env('PAYMOB_INTEGRATION_ID'),
     'iframe_id' => env('PAYMOB_IFRAME_ID'),
+    'wallet_integration_id' => env('PAYMOB_WALLET_INTEGRATION_ID'),
+
 ],
 
 ];
